@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nasha HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f4ec;--card:#fffefa;--ink:#1f2a22;--mute:#6a7568;--line:#dfdccf;--g:#2d6a3e;--g2:#e3eedc;--g3:#1d4a2b;--warn:#b4472f;--warnbg:#f6e3dc;--r:10px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;line-height:1.2}
+h2{font-size:24px;margin-bottom:6px}
+.lead{color:var(--mute);margin:0 0 22px;max-width:62ch}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--g);outline-offset:1px}
+textarea{resize:vertical}
+button{cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px}
+button:hover{background:var(--g2)}
+button:disabled{opacity:.35;cursor:default}
+button.pri{background:var(--g);color:#fff;border-color:var(--g)}button.pri:hover{background:var(--g3)}
+button.ghost{border-style:dashed;color:var(--g);width:100%;background:transparent}
+button.x{color:var(--warn)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;background:var(--g3);color:#fff;flex-wrap:wrap}
+.brand{font-family:Fraunces,Georgia,serif;font-size:22px;font-weight:700}
+.who{display:flex;align-items:center;gap:10px;font-size:13px}
+.who button{background:transparent;color:#fff;border-color:#ffffff66;padding:5px 10px}
+.who button:hover{background:#ffffff22}
+#live{width:9px;height:9px;border-radius:50%;background:#d9a441;display:inline-block}
+#live.on{background:#7ddc8a}
+nav{display:flex;gap:4px;padding:10px 20px 0;overflow-x:auto;border-bottom:1px solid var(--line);background:var(--card)}
+nav button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;padding:10px 14px;white-space:nowrap;color:var(--mute);font-weight:500}
+nav button.on{color:var(--g3);border-bottom-color:var(--g);font-weight:600}
+main{padding:28px 20px 60px;max-width:1500px;margin:0 auto}
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.lbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:32px;width:100%;max-width:380px}
+.lbox h1{font-size:30px;color:var(--g3)}.lbox p{color:var(--mute);margin:6px 0 20px}
+.lbox label{display:block;margin-bottom:14px;font-weight:500;font-size:13px}.lbox label input{margin-top:5px}
+.err{color:var(--warn);min-height:20px;font-size:13px;margin:0 0 10px!important}
+/* kanban */
+.board{display:grid;grid-template-columns:repeat(5,minmax(250px,1fr));gap:14px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x proximity}
+.col{background:#ecebe0;border-radius:var(--r);padding:12px;scroll-snap-align:start;display:flex;flex-direction:column;gap:10px;align-self:start}
+.col header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.col header b{font-family:Fraunces,Georgia,serif;font-size:17px}.col header span{color:var(--mute);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px}
+.card .t{font-weight:600;border-color:transparent;padding-left:4px}
+.card .t:focus,.card .t:hover{border-color:var(--line)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.acts{display:flex;gap:6px;justify-content:space-between}
+/* canvas */
+.canvas{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.blk{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px}
+.blk.extra{background:#eef4e8;border-color:#c9dcc0}
+.blk h3{font-size:17px;color:var(--g3)}
+.note{display:flex;gap:6px;align-items:flex-start}
+.note textarea{background:#fff8d9;border-color:#ecdf9e;min-height:44px}
+.note button{padding:4px 8px}
+/* snapshot, soak, plan */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.panel h3{margin-bottom:10px;color:var(--g3);font-size:18px}
+.panel label{display:block;font-size:13px;font-weight:500;margin:10px 0 4px}
+.stat{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}.stat:last-child{border:0}
+.stat b{font-family:Fraunces,Georgia,serif;font-size:18px}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.sum div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.sum small{color:var(--mute);display:block}.sum b{font-family:Fraunces,Georgia,serif;font-size:28px}
+.sum .bad{background:var(--warnbg);border-color:#e2b5a7}.sum .bad b{color:var(--warn)}
+.sum .ok b{color:var(--g)}
+.wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px}
+table{border-collapse:collapse;width:100%;min-width:820px}
+th{text-align:left;font-size:13px;color:var(--mute);font-weight:500;padding:10px;border-bottom:1px solid var(--line)}
+td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.days{white-space:nowrap;padding:0 10px;font-weight:600}
+.wk{margin-bottom:22px}
+.wk h3{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+.wk h3 small{font:13px Inter,sans-serif;color:var(--mute)}
+.bar{height:8px;background:#e4e2d4;border-radius:5px;overflow:hidden;margin-bottom:10px}.bar i{display:block;height:100%;background:var(--g);transition:width .3s}
+.task{display:grid;grid-template-columns:28px 1fr 150px auto;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:8px 10px;margin-bottom:6px}
+.task input[type=checkbox]{width:20px;height:20px;accent-color:var(--g)}
+.task.done input[type=text]{text-decoration:line-through;color:var(--mute)}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--warn);color:#fff;padding:10px 16px;border-radius:8px;display:none;max-width:90vw;z-index:9}
+@media(max-width:640px){main{padding:20px 12px 50px}.top{padding:10px 12px}nav{padding:6px 8px 0}
+.board{grid-template-columns:repeat(5,82vw)}
+.task{grid-template-columns:28px 1fr auto}.task select{grid-column:2/3}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="login" hidden>
+  <form class="lbox" id="lf">
+    <h1>Nasha HQ</h1>
+    <p>Sign in with your team email.</p>
+    <label>Email<input type="email" id="em" autocomplete="username" required></label>
+    <label>Password<input type="password" id="pw" autocomplete="current-password" required></label>
+    <p class="err" id="lerr"></p>
+    <button class="pri" style="width:100%" type="submit">Sign in</button>
+  </form>
+</div>
+
+<div id="shell" hidden>
+  <header class="top">
+    <div class="brand">Nasha HQ</div>
+    <div class="who"><span id="live" title="Live connection"></span><span id="me"></span><button id="out" type="button">Sign out</button></div>
+  </header>
+  <nav id="tabs"></nav>
+  <main id="app"></main>
+</div>
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ====== PASTE YOUR VALUES HERE (anon public key only, never the service_role key) ======
+const SUPABASE_URL = 'PASTE_PROJECT_URL_HERE';
+const SUPABASE_ANON_KEY = 'PASTE_ANON_PUBLIC_KEY_HERE';
+// ========================================================================================
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const TABLES = ['deals','canvas_notes','snapshot','soak_samples','tasks'];
+const pk = t => t === 'snapshot' ? 'key' : 'id';
+const STAGES = ['Lead','Contacted','Meeting','Proposal','Won'];
+const TEAM = ['Rawad','Bassam','Charbel','Christian'];
+const BLOCKS = [
+ ['segments','Customer segments'],['value','Value propositions'],['channels','Channels'],
+ ['relationships','Customer relationships'],['revenue','Revenue streams'],['resources','Key resources'],
+ ['activities','Key activities'],['partners','Key partners'],['costs','Cost structure'],
+ ['problem','Problem and evidence',1],['assumptions','Riskiest assumptions',1],
+ ['metrics','Key metrics',1],['loop','Circular loop',1]];
+const TABS = [['funnel','Funnel'],['canvas','Business Model Canvas'],['snapshot','Snapshot'],['soak','Soak Test Log'],['plan','Build Plan']];
+const S = {deals:[],canvas_notes:[],snapshot:[],soak_samples:[],tasks:[]};
+let tab = localStorage.getItem('nasha_tab') || 'funnel', pending = false, started = false, chan = null;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => Number(n || 0).toLocaleString('en-US', {maximumFractionDigits: 2});
+const bySeq = (a, b) => a.seq - b.seq;
+const A = (t, id, f) => `data-t="${t}" data-id="${id}" data-f="${f}"`;
+function toast(m){const e=$('#toast');e.textContent=m;e.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display='none',5000)}
+
+/* ---------- auth ---------- */
+$('#lf').addEventListener('submit', async e => {
+  e.preventDefault(); $('#lerr').textContent = '';
+  const {error} = await sb.auth.signInWithPassword({email: $('#em').value.trim(), password: $('#pw').value});
+  if (error) $('#lerr').textContent = error.message;
+});
+$('#out').addEventListener('click', () => sb.auth.signOut());
+sb.auth.onAuthStateChange((ev, session) => setTimeout(() => route(session), 0));
+function route(session){
+  if (session && !started){ started = true; start(session.user); }
+  else if (!session){ started = false; if (chan){ sb.removeChannel(chan); chan = null; }
+    $('#shell').hidden = true; $('#login').hidden = false; $('#pw').value = ''; }
+}
+
+/* ---------- data ---------- */
+async function loadAll(){
+  await Promise.all(TABLES.map(async t => {
+    const {data, error} = await sb.from(t).select('*');
+    if (error) return toast(t + ': ' + error.message);
+    S[t] = data || [];
+  }));
+}
+async function start(user){
+  $('#login').hidden = true; $('#shell').hidden = false; $('#me').textContent = user.email;
+  await loadAll(); render();
+  chan = sb.channel('nasha-hq');
+  TABLES.forEach(t => chan.on('postgres_changes', {event:'*', schema:'public', table:t}, p => onChange(t, p)));
+  let first = true;
+  chan.subscribe(status => {
+    $('#live').className = status === 'SUBSCRIBED' ? 'on' : '';
+    if (status === 'SUBSCRIBED'){ if (!first) loadAll().then(queue); first = false; }
+  });
+}
+function onChange(t, p){
+  const k = pk(t), a = S[t];
+  if (p.eventType === 'DELETE') S[t] = a.filter(x => x[k] !== p.old[k]);
+  else { const i = a.findIndex(x => x[k] === p.new[k]); i < 0 ? a.push(p.new) : a[i] = p.new; }
+  queue();
+}
+async function upd(t, id, patch){
+  const r = S[t].find(x => x.id === id); if (!r) return;
+  Object.assign(r, patch);
+  const {error} = await sb.from(t).update(patch).eq('id', id);
+  if (error) toast(error.message); queue();
+}
+async function ins(t, row){
+  const {data, error} = await sb.from(t).insert(row).select().single();
+  if (error){ toast(error.message); return; }
+  if (!S[t].some(x => x.id === data.id)) S[t].push(data);
+  queue(); return data;
+}
+async function del(t, id){
+  S[t] = S[t].filter(x => x.id !== id); queue();
+  const {error} = await sb.from(t).delete().eq('id', id); if (error) toast(error.message);
+}
+const snap = k => (S.snapshot.find(x => x.key === k) || {}).value ?? '';
+async function setSnap(key, value){
+  const r = S.snapshot.find(x => x.key === key); r ? r.value = value : S.snapshot.push({key, value});
+  const {error} = await sb.from('snapshot').upsert({key, value, updated_at: new Date().toISOString()});
+  if (error) toast(error.message); queue();
+}
+
+/* ---------- rendering ---------- */
+function queue(){
+  const a = document.activeElement;
+  if (a && a.closest && a.closest('#app') && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)){ pending = true; return; }
+  render();
+}
+document.addEventListener('focusout', () => { if (pending){ pending = false; setTimeout(render, 200); } });
+
+function render(){
+  $('#tabs').innerHTML = TABS.map(([k, n]) => `<button class="${k === tab ? 'on' : ''}" data-tab="${k}">${n}</button>`).join('');
+  const sx = $('.board') ? $('.board').scrollLeft : 0;
+  $('#app').innerHTML = {funnel, canvas, snapshot, soak, plan}[tab]();
+  if ($('.board')) $('.board').scrollLeft = sx;
+}
+const ownerSel = (t, id, f, v) => {
+  const opts = ['', ...TEAM, 'Instructor']; if (v && !opts.includes(v)) opts.push(v);
+  return `<select ${A(t,id,f)}>${opts.map(o => `<option value="${esc(o)}" ${o === (v||'') ? 'selected' : ''}>${o || 'Owner…'}</option>`).join('')}</select>`;
+};
+
+function funnel(){
+  return `<h2>Funnel</h2><p class="lead">Nurseries we are talking to. Move a card with the arrows; edits show up for everyone.</p>
+  <div class="board">${STAGES.map((s, si) => {
+    const cs = S.deals.filter(d => d.stage === s).sort(bySeq);
+    const tot = cs.reduce((a, d) => a + Number(d.value || 0), 0);
+    return `<section class="col"><header><b>${s}</b><span>${cs.length} cards, $${fmt(tot)}</span></header>
+    ${cs.map(d => `<article class="card">
+      <input class="t" ${A('deals',d.id,'name')} value="${esc(d.name)}" aria-label="Name">
+      <div class="row"><input type="number" min="0" step="any" ${A('deals',d.id,'value')} value="${d.value}" aria-label="Value in dollars" placeholder="$">${ownerSel('deals',d.id,'owner',d.owner)}</div>
+      <textarea rows="2" placeholder="Note" ${A('deals',d.id,'note')}>${esc(d.note)}</textarea>
+      <div class="acts"><button data-act="move" data-id="${d.id}" data-dir="-1" ${si===0?'disabled':''} aria-label="Move left">◀</button>
+      <button class="x" data-act="del" data-t="deals" data-id="${d.id}">Delete</button>
+      <button data-act="move" data-id="${d.id}" data-dir="1" ${si===4?'disabled':''} aria-label="Move right">▶</button></div></article>`).join('')}
+    <button class="ghost" data-act="add-deal" data-stage="${s}">+ Add card</button></section>`;
+  }).join('')}</div>`;
+}
+
+function canvas(){
+  return `<h2>Business Model Canvas</h2><p class="lead">Sticky notes for each block. Anyone can add, edit or delete. The green blocks are our extras.</p>
+  <div class="canvas">${BLOCKS.map(([k, n, ex]) => {
+    const ns = S.canvas_notes.filter(x => x.block === k).sort(bySeq);
+    return `<section class="blk ${ex ? 'extra' : ''}"><h3>${n}</h3>
+    ${ns.map(x => `<div class="note"><textarea rows="2" ${A('canvas_notes',x.id,'content')} data-nid="${x.id}">${esc(x.content)}</textarea>
+      <button class="x" data-act="del" data-t="canvas_notes" data-id="${x.id}" aria-label="Delete note">✕</button></div>`).join('')}
+    <button class="ghost" data-act="add-note" data-block="${k}">+ Add note</button></section>`;
+  }).join('')}</div>`;
+}
+
+function snapshot(){
+  const price = +snap('price'), vc = +snap('var_cost'), fx = +snap('fixed_costs'), cac = +snap('cac');
+  const cm = price - vc, be = cm > 0 ? Math.ceil(fx / cm) : null;
+  const ta = (k, label, rows = 4) => `<label>${label}</label><textarea rows="${rows}" data-snap="${k}">${esc(snap(k))}</textarea>`;
+  const num = (k, label) => `<label>${label}</label><input type="number" step="any" min="0" data-snap="${k}" value="${esc(snap(k))}">`;
+  return `<h2>Snapshot</h2><p class="lead">One page for anyone who needs to understand Nasha in two minutes.</p>
+  <div class="grid2"><div class="panel"><h3>The venture</h3>${ta('problem','The problem')}${ta('solution','Our solution')}${ta('stage','Our current stage',3)}</div>
+  <div><div class="panel"><h3>Key metrics</h3>${num('price','Price per 72-cell tray ($)')}${num('var_cost','Variable cost per tray ($)')}${num('fixed_costs','Fixed costs per month ($)')}${num('cac','Cost to win a nursery ($)')}
+    <div style="margin-top:14px"><div class="stat"><span>Contribution per tray</span><b>$${fmt(cm)}</b></div>
+    <div class="stat"><span>Break-even trays per month</span><b>${be === null ? '—' : fmt(be)}</b></div>
+    <div class="stat"><span>Cost to win a nursery</span><b>$${fmt(cac)}</b></div></div></div>
+  <div class="panel" style="margin-top:16px"><h3>Evidence this week</h3>${ta('evidence','What we learned or proved',5)}</div></div></div>`;
+}
+
+function soak(){
+  const rows = S.soak_samples.slice().sort(bySeq), n = rows.length;
+  const failed = rows.filter(r => r.condition === 'failed').length, running = n - failed;
+  const pct = n ? failed / n * 100 : 0, over = n && pct > 5;
+  const days = d => d ? Math.max(0, Math.floor((Date.now() - new Date(d + 'T00:00:00').getTime()) / 864e5)) : '';
+  const cond = ['holding','softening','failed'];
+  return `<h2>Soak Test Log</h2><p class="lead">Our riskiest experiment: the tray must hold wet soil for 6 weeks (42 days) with under 5% failing.</p>
+  <div class="sum"><div><small>Samples running</small><b>${running}</b></div><div><small>Samples failed</small><b>${failed}</b></div>
+  <div class="${n ? (over ? 'bad' : 'ok') : ''}"><small>Failed vs 5% limit</small><b>${n ? pct.toFixed(1) + '%' : '—'}</b><small>${n ? (over ? 'Over the limit' : 'Within the limit') : 'No samples yet'}</small></div></div>
+  <div class="wrap"><table><thead><tr><th>Sample ID</th><th>Recipe used</th><th>In wet soil since</th><th>Days elapsed</th><th>Condition</th><th>Note</th><th></th></tr></thead><tbody>
+  ${rows.map(r => `<tr><td><input ${A('soak_samples',r.id,'sample_code')} value="${esc(r.sample_code)}"></td>
+   <td><input ${A('soak_samples',r.id,'recipe')} value="${esc(r.recipe)}"></td>
+   <td><input type="date" ${A('soak_samples',r.id,'start_date')} value="${r.start_date || ''}"></td>
+   <td class="days">${days(r.start_date)} / 42</td>
+   <td><select ${A('soak_samples',r.id,'condition')}>${cond.map(c => `<option ${c === r.condition ? 'selected' : ''}>${c}</option>`).join('')}</select></td>
+   <td><input ${A('soak_samples',r.id,'note')} value="${esc(r.note)}"></td>
+   <td><button class="x" data-act="del" data-t="soak_samples" data-id="${r.id}" aria-label="Delete">✕</button></td></tr>`).join('') || `<tr><td colspan="7" style="padding:18px;color:var(--mute)">No samples yet. Add the first one below.</td></tr>`}
+  </tbody></table></div><button class="pri" data-act="add-soak">+ Add sample</button>`;
+}
+
+function plan(){
+  const all = S.tasks, dn = all.filter(t => t.done).length;
+  const pc = (a, b) => b ? Math.round(a / b * 100) : 0;
+  return `<h2>Build Plan</h2><p class="lead">Four weeks, one checklist. Overall: ${dn} of ${all.length} done (${pc(dn, all.length)}%).</p>
+  <div class="bar" style="height:12px;margin-bottom:26px"><i style="width:${pc(dn, all.length)}%"></i></div>
+  ${[1,2,3,4].map(w => {
+    const ts = all.filter(t => t.week === w).sort(bySeq), d = ts.filter(t => t.done).length;
+    return `<section class="wk"><h3>Week ${w}<small>${d} of ${ts.length} done</small></h3><div class="bar"><i style="width:${pc(d, ts.length)}%"></i></div>
+    ${ts.map(t => `<div class="task ${t.done ? 'done' : ''}"><input type="checkbox" ${A('tasks',t.id,'done')} ${t.done ? 'checked' : ''} aria-label="Done">
+      <input type="text" ${A('tasks',t.id,'title')} value="${esc(t.title)}">${ownerSel('tasks',t.id,'owner',t.owner)}
+      <button class="x" data-act="del" data-t="tasks" data-id="${t.id}" aria-label="Delete task">✕</button></div>`).join('')}
+    <button class="ghost" data-act="add-task" data-week="${w}">+ Add task to week ${w}</button></section>`;
+  }).join('')}`;
+}
+
+/* ---------- events ---------- */
+$('#tabs').addEventListener('click', e => {
+  const b = e.target.closest('[data-tab]'); if (!b) return;
+  tab = b.dataset.tab; localStorage.setItem('nasha_tab', tab); render(); // only remembers the open tab, no venture data
+});
+$('#app').addEventListener('change', e => {
+  const el = e.target;
+  if (el.dataset.snap) return setSnap(el.dataset.snap, el.value);
+  const {t, id, f} = el.dataset; if (!t) return;
+  const v = el.type === 'checkbox' ? el.checked : el.type === 'number' ? (el.value === '' ? 0 : Number(el.value)) : (el.type === 'date' && !el.value ? null : el.value);
+  upd(t, id, {[f]: v});
+  if (el.type === 'checkbox' || el.tagName === 'SELECT') el.blur();
+});
+$('#app').addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const d = b.dataset;
+  if (d.act === 'add-deal') ins('deals', {name: 'New card', stage: d.stage});
+  else if (d.act === 'move'){ const r = S.deals.find(x => x.id === d.id), i = STAGES.indexOf(r.stage) + Number(d.dir); if (STAGES[i]) upd('deals', d.id, {stage: STAGES[i]}); }
+  else if (d.act === 'del'){ if (confirm('Delete this item?')) del(d.t, d.id); }
+  else if (d.act === 'add-note'){ const r = await ins('canvas_notes', {block: d.block, content: ''}); if (r){ const el = document.querySelector(`[data-nid="${r.id}"]`); el && el.focus(); } }
+  else if (d.act === 'add-soak') ins('soak_samples', {sample_code: 'S-' + (S.soak_samples.length + 1), recipe: '', start_date: new Date().toISOString().slice(0, 10), condition: 'holding'});
+  else if (d.act === 'add-task') ins('tasks', {week: Number(d.week), title: 'New task', owner: '', done: false});
+});
+</script>
+</body>
+</html>
