@@ -85,6 +85,24 @@ td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
 .task input[type=checkbox]{width:20px;height:20px;accent-color:var(--g)}
 .task.done input[type=text]{text-decoration:line-through;color:var(--mute)}
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--warn);color:#fff;padding:10px 16px;border-radius:8px;display:none;max-width:90vw;z-index:9}
+/* brand */
+.bhero{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:28px;align-items:center;background:#3f7d3c;color:#f5eede;border-radius:14px;padding:26px;margin-bottom:20px}
+.bhero img{width:100%;border-radius:12px;display:block}
+.bhero h2{color:#f5eede;font-size:30px}.bhero p{margin:8px 0 0;max-width:58ch;font-size:17px}
+.bhero .tag{display:inline-block;margin-top:14px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:#ffffff22;padding:4px 10px;border-radius:99px}
+.bgrid{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:16px;align-items:start}
+.vid{background:#000;border-radius:var(--r);overflow:hidden;aspect-ratio:9/16;max-height:680px;margin:0 auto}
+.vid video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin:6px 0 4px}
+.sw div{border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:12px}
+.sw i{display:block;height:54px}.sw span{display:block;padding:6px 8px}.sw b{display:block;font-size:13px}
+.social{display:flex;flex-direction:column;gap:10px}
+.social a.btn{display:flex;align-items:center;justify-content:space-between;gap:10px;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:#fff;font-weight:600}
+.social a.btn:hover{background:var(--g2)}.social a.btn small{color:var(--mute);font-weight:400}
+.dl{display:inline-flex;gap:8px;align-items:center;text-decoration:none;background:var(--g);color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;margin:4px 8px 4px 0}
+.dl:hover{background:var(--g3)}.dl.alt{background:#fff;color:var(--g3);border:1px solid var(--line)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:14px}.kv dt{color:var(--mute)}.kv dd{margin:0}
+@media(max-width:760px){.bhero,.bgrid{grid-template-columns:1fr}}
 @media(max-width:640px){main{padding:20px 12px 50px}.top{padding:10px 12px}nav{padding:6px 8px 0}
 .board{grid-template-columns:repeat(5,82vw)}
 .task{grid-template-columns:28px 1fr auto}.task select{grid-column:2/3}}
@@ -132,7 +150,7 @@ const BLOCKS = [
  ['activities','Key activities'],['partners','Key partners'],['costs','Cost structure'],
  ['problem','Problem and evidence',1],['assumptions','Riskiest assumptions',1],
  ['metrics','Key metrics',1],['loop','Circular loop',1]];
-const TABS = [['funnel','Funnel'],['canvas','Business Model Canvas'],['snapshot','Snapshot'],['soak','Soak Test Log'],['plan','Build Plan']];
+const TABS = [['funnel','Funnel'],['canvas','Business Model Canvas'],['snapshot','Snapshot'],['soak','Soak Test Log'],['plan','Build Plan'],['brand','Brand']];
 const S = {deals:[],canvas_notes:[],snapshot:[],soak_samples:[],tasks:[]};
 let tab = localStorage.getItem('nasha_tab') || 'funnel', pending = false, started = false, chan = null;
 
@@ -216,7 +234,7 @@ document.addEventListener('focusout', () => { if (pending){ pending = false; set
 function render(){
   $('#tabs').innerHTML = TABS.map(([k, n]) => `<button class="${k === tab ? 'on' : ''}" data-tab="${k}">${n}</button>`).join('');
   const sx = $('.board') ? $('.board').scrollLeft : 0;
-  $('#app').innerHTML = {funnel, canvas, snapshot, soak, plan}[tab]();
+  $('#app').innerHTML = {funnel, canvas, snapshot, soak, plan, brand}[tab]();
   if ($('.board')) $('.board').scrollLeft = sx;
 }
 const ownerSel = (t, id, f, v) => {
@@ -299,6 +317,35 @@ function plan(){
       <button class="x" data-act="del" data-t="tasks" data-id="${t.id}" aria-label="Delete task">✕</button></div>`).join('')}
     <button class="ghost" data-act="add-task" data-week="${w}">+ Add task to week ${w}</button></section>`;
   }).join('')}`;
+}
+
+const SOCIAL = [['instagram','Instagram','https://www.instagram.com/nasha.trays/'],['tiktok','TikTok',''],['facebook','Facebook','']];
+function brand(){
+  const link = k => snap('social_' + k) || (SOCIAL.find(x => x[0] === k) || [])[2] || '';
+  const sw = [['Nasha Green','#3F7D3C','Main colour, backgrounds'],['Deep Green','#1D4A2B','Text, headers'],['Cream','#F5EEDE','Logo tray, light backgrounds'],['Tray Tan','#C9B995','Tray cells, accents'],['Sprout Green','#7EB250','The growing cell, highlights']];
+  return `<h2>Brand</h2><p class="lead">Our logo, brand guidelines, first marketing video and social media accounts.</p>
+  <section class="bhero"><img src="assets/nasha-logo.png" alt="Nasha logo: a seedling tray seen from above with one sprouting cell">
+   <div><h2>Nasha</h2><p>Nasha turns potato peel waste from Lebanese factories into plantable seedling trays, so nurseries plant the whole cell and leave no plastic behind.</p>
+   <span class="tag">Nasha (نشا) means “starch” in Arabic</span></div></section>
+  <div class="bgrid">
+   <div class="panel"><h3>30-second marketing video</h3>
+    <div class="vid"><video controls playsinline preload="metadata" poster="assets/nasha-promo-poster.jpg"><source src="assets/nasha-promo-30s.mp4" type="video/mp4"></video></div>
+    <p style="margin:10px 0 0"><a class="dl alt" href="assets/nasha-promo-30s.mp4" download>Download video</a></p></div>
+   <div style="display:grid;gap:16px">
+    <div class="panel"><h3>Brand guidelines</h3>
+     <div class="sw">${sw.map(([n,h,u]) => `<div><i style="background:${h}"></i><span><b>${n}</b>${h}<br>${u}</span></div>`).join('')}</div>
+     <dl class="kv"><dt>Logo</dt><dd>A seedling tray seen from above, with one cell growing a plant. Green version is the main logo; use it on clean backgrounds and never stretch or recolour it.</dd>
+     <dt>Fonts</dt><dd>Inter for English, Noto Sans Arabic for Arabic.</dd>
+     <dt>Tone</dt><dd>Simple language, real numbers, no claims we have not tested yet.</dd>
+     <dt>Photos</dt><dd>Real peel, soil, hands and trays in natural light.</dd></dl>
+     <p style="margin:14px 0 0"><a class="dl" href="assets/nasha-brand-guidelines.pdf" target="_blank" rel="noopener">Open brand guidelines (PDF)</a><a class="dl alt" href="assets/nasha-logo.png" download>Download logo</a></p></div>
+    <div class="panel"><h3>Social media</h3><div class="social">
+     ${SOCIAL.map(([k, n]) => link(k) ? `<a class="btn" href="${esc(link(k))}" target="_blank" rel="noopener">${n}<small>@nasha.trays ↗</small></a>` : '').join('')}
+     </div>
+     <label>Instagram link</label><input type="url" data-snap="social_instagram" value="${esc(link('instagram'))}" placeholder="https://www.instagram.com/...">
+     <label>TikTok link</label><input type="url" data-snap="social_tiktok" value="${esc(link('tiktok'))}" placeholder="https://www.tiktok.com/@...">
+     <label>Facebook link</label><input type="url" data-snap="social_facebook" value="${esc(link('facebook'))}" placeholder="https://www.facebook.com/..."></div>
+   </div></div>`;
 }
 
 /* ---------- events ---------- */
