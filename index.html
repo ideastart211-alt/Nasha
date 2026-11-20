@@ -323,7 +323,7 @@ const SOCIAL = [['instagram','Instagram','https://www.instagram.com/nasha.trays/
 function brand(){
   const link = k => snap('social_' + k) || (SOCIAL.find(x => x[0] === k) || [])[2] || '';
   const sw = [['Nasha Green','#3F7D3C','Main colour, backgrounds'],['Deep Green','#1D4A2B','Text, headers'],['Cream','#F5EEDE','Logo tray, light backgrounds'],['Tray Tan','#C9B995','Tray cells, accents'],['Sprout Green','#7EB250','The growing cell, highlights']];
-  return `<h2>Brand</h2><p class="lead">Our logo, brand guidelines, first marketing video and social media accounts.</p>
+  return `<h2>Brand</h2><p class="lead">Our logo, brand guidelines, marketing video, social media accounts and how we make our prototype.</p>
   <section class="bhero"><img src="assets/nasha-logo.png" alt="Nasha logo: a seedling tray seen from above with one sprouting cell">
    <div><h2>Nasha</h2><p>Nasha turns potato peel waste from Lebanese factories into plantable seedling trays, so nurseries plant the whole cell and leave no plastic behind.</p>
    <span class="tag">Nasha (نشا) means “starch” in Arabic</span></div></section>
@@ -345,7 +345,11 @@ function brand(){
      <label>Instagram link</label><input type="url" data-snap="social_instagram" value="${esc(link('instagram'))}" placeholder="https://www.instagram.com/...">
      <label>TikTok link</label><input type="url" data-snap="social_tiktok" value="${esc(link('tiktok'))}" placeholder="https://www.tiktok.com/@...">
      <label>Facebook link</label><input type="url" data-snap="social_facebook" value="${esc(link('facebook'))}" placeholder="https://www.facebook.com/..."></div>
-   </div></div>`;
+   </div></div>
+  <div class="panel" style="margin-top:16px"><h3>How we make our prototype</h3>
+   <p class="lead" style="margin-bottom:14px">Prototype run #1, filmed step by step: grating and blending the potato, squeezing out the starch water, letting the starch settle, then cooking it with glycerol and vinegar into our first bioplastic.</p>
+   <div class="bgrid"><div class="vid"><video controls playsinline preload="metadata" poster="assets/nasha-prototype-poster.jpg"><source src="assets/nasha-prototype-process.mp4" type="video/mp4"></video></div>
+   <ol style="margin:0;padding-left:20px;line-height:1.9"><li>Grate the potato</li><li>Rinse with clean water</li><li>Blend into a pulp</li><li>Squeeze out the starch water</li><li>Let the starch settle</li><li>Heat the starch with water</li><li>Add glycerol and vinegar</li><li>Cook into a paste</li><li>Our first bioplastic</li></ol></div></div>`;
 }
 
 /* ---------- events ---------- */
