@@ -85,6 +85,21 @@ td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
 .task input[type=checkbox]{width:20px;height:20px;accent-color:var(--g)}
 .task.done input[type=text]{text-decoration:line-through;color:var(--mute)}
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--warn);color:#fff;padding:10px 16px;border-radius:8px;display:none;max-width:90vw;z-index:9}
+/* goals */
+.ms{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ms li{display:grid;grid-template-columns:28px 120px 1fr;gap:10px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+.ms .dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;background:var(--g)}
+.ms li.next .dot{background:#fff;border:2px solid var(--g);color:var(--g)}
+.ms li.next{background:#fbfaf3}
+.ms small{color:var(--mute);font-size:13px;padding-top:2px}
+.okr{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.okr ol{margin:8px 0 0;padding-left:20px;line-height:1.7}
+.kpi{width:100%;border-collapse:collapse;min-width:620px}
+.kpi td,.kpi th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+.kpi input{max-width:120px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--g2);color:var(--g3)}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+@media(max-width:640px){.ms li{grid-template-columns:28px 1fr}.ms li small{grid-column:2}}
 /* brand */
 .bhero{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:28px;align-items:center;background:#3f7d3c;color:#f5eede;border-radius:14px;padding:26px;margin-bottom:20px}
 .bhero img{width:100%;border-radius:12px;display:block}
@@ -150,7 +165,7 @@ const BLOCKS = [
  ['activities','Key activities'],['partners','Key partners'],['costs','Cost structure'],
  ['problem','Problem and evidence',1],['assumptions','Riskiest assumptions',1],
  ['metrics','Key metrics',1],['loop','Circular loop',1]];
-const TABS = [['funnel','Funnel'],['canvas','Business Model Canvas'],['snapshot','Snapshot'],['soak','Soak Test Log'],['plan','Build Plan'],['brand','Brand']];
+const TABS = [['funnel','Funnel'],['canvas','Business Model Canvas'],['snapshot','Snapshot'],['soak','Soak Test Log'],['plan','Build Plan'],['goals','Goals & KPIs'],['brand','Brand']];
 const S = {deals:[],canvas_notes:[],snapshot:[],soak_samples:[],tasks:[]};
 let tab = localStorage.getItem('nasha_tab') || 'funnel', pending = false, started = false, chan = null;
 
@@ -234,7 +249,7 @@ document.addEventListener('focusout', () => { if (pending){ pending = false; set
 function render(){
   $('#tabs').innerHTML = TABS.map(([k, n]) => `<button class="${k === tab ? 'on' : ''}" data-tab="${k}">${n}</button>`).join('');
   const sx = $('.board') ? $('.board').scrollLeft : 0;
-  $('#app').innerHTML = {funnel, canvas, snapshot, soak, plan, brand}[tab]();
+  $('#app').innerHTML = {funnel, canvas, snapshot, soak, plan, goals, brand}[tab]();
   if ($('.board')) $('.board').scrollLeft = sx;
 }
 const ownerSel = (t, id, f, v) => {
@@ -317,6 +332,47 @@ function plan(){
       <button class="x" data-act="del" data-t="tasks" data-id="${t.id}" aria-label="Delete task">✕</button></div>`).join('')}
     <button class="ghost" data-act="add-task" data-week="${w}">+ Add task to week ${w}</button></section>`;
   }).join('')}`;
+}
+
+const MILESTONES = [
+ [1,'Weeks 1–3','Idea chosen, problem interviews, first unit economics'],
+ [1,'Weeks 4–6','Pitch video, pitch deck and business model canvas'],
+ [1,'Weeks 7–8','CAPEX, OPEX and P&L / payback simulation'],
+ [1,'Prototype run 1','First starch extraction: 5% yield, part cracked'],
+ [1,'Prototype run 4','Working tray: 2 kg potato, vinegar and glycerin per tray'],
+ [1,'Week 9','Brand, logo, guidelines, @nasha.trays live with first Reel'],
+ [0,'Next','Close our first client (nursery we are talking to now)'],
+ [0,'Next','50-tray pilot with that client, feedback collected'],
+ [0,'Quarter 1','First paid order, 300 trays sold'],
+ [0,'Quarter 4','First profitable quarter (3,000 trays)'],
+ [0,'Quarter 6','Payback of our start-up money (~17 months)']];
+const KPIS = [
+ ['kpi_trays','Trays sold this month','100 / month in Q1','number'],
+ ['kpi_customers','Paying customers','1 in Q1','number'],
+ ['kpi_contacted','Nurseries contacted','10','number'],
+ ['kpi_followers','Instagram followers','300','number'],
+ ['kpi_posts','Instagram posts','1 per week','number'],
+ ['kpi_yield','Starch yield (%)','≥ 5% (model 8%)','number'],
+ ['kpi_soakfail','Soak-test failures (%)','< 5% after 6 weeks','number']];
+const KPI_DEFAULT = {kpi_trays:'0',kpi_customers:'0',kpi_contacted:'1',kpi_followers:'0',kpi_posts:'1',kpi_yield:'5',kpi_soakfail:''};
+function goals(){
+  const v = k => snap(k) !== '' ? snap(k) : (KPI_DEFAULT[k] ?? '');
+  const price = +snap('price') || 1.8, vc = +snap('var_cost') || 0.78;
+  return `<h2>Goals & KPIs</h2><p class="lead">Where we are, where we are going next, and the numbers we track every week.</p>
+  <div class="sum"><div><small>Price per tray</small><b>$${price.toFixed(2)}</b></div><div><small>Variable cost per tray</small><b>$${vc.toFixed(2)}</b></div>
+   <div class="ok"><small>Contribution per tray</small><b>$${(price - vc).toFixed(2)}</b></div><div><small>Break-even (team unpaid)</small><b>~680</b><small>trays per month</small></div></div>
+  <div class="grid2">
+   <div class="panel"><h3>Milestones</h3><ul class="ms">${MILESTONES.map(([d, w, t]) => `<li class="${d ? '' : 'next'}"><span class="dot">${d ? '✓' : '→'}</span><small>${w}</small><span>${t}</span></li>`).join('')}</ul></div>
+   <div class="panel"><h3>OKRs, next quarter</h3><div class="okr">
+    <div><b>1. Win our first paying customer</b><ol><li>Close 1 nursery client (written order)</li><li>Deliver a 50-tray pilot and collect feedback</li><li>Sell 300 trays in Q1</li></ol></div>
+    <div><b>2. Prove the tray works in real conditions</b><ol><li>10+ soak-test samples, under 5% failing after 6 weeks</li><li>Side-by-side growth test against a plastic tray</li><li>Measure starch yield on peel (target ≥ 5%)</li></ol></div>
+    <div><b>3. Build awareness</b><ol><li>300 Instagram followers</li><li>1 post per week</li><li>Contact 10 nurseries, get 3 meetings</li></ol></div></div></div>
+  </div>
+  <div class="panel" style="margin-top:16px"><h3>KPIs</h3><p class="lead" style="margin-bottom:10px">Type the current value; it saves for the whole team.</p>
+   <div class="wrap" style="border:0"><table class="kpi"><thead><tr><th>KPI</th><th>Current</th><th>Target</th></tr></thead><tbody>
+   ${KPIS.map(([k, n, t]) => `<tr><td>${n}</td><td><input type="number" step="any" min="0" data-snap="${k}" value="${esc(v(k))}" aria-label="${esc(n)}"></td><td><span class="pill">${t}</span></td></tr>`).join('')}
+   <tr><td>Contribution per tray</td><td><b>$${(price - vc).toFixed(2)}</b></td><td><span class="pill">≥ $1.00</span></td></tr>
+   </tbody></table></div></div>`;
 }
 
 const SOCIAL = [['instagram','Instagram','https://www.instagram.com/nasha.trays/'],['tiktok','TikTok',''],['facebook','Facebook','']];
